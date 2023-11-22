@@ -24,8 +24,7 @@ const Signout = () => {
         body: JSON.stringify(formData),
       });
       const data = await response.json();
-      console.log(error);
-      if (data.status === 500) {
+      if (data.status === "fail" || "error") {
         setError(data.message);
         setLoading(false);
         return;
