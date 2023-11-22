@@ -2,6 +2,7 @@ import asyncHandler from "../middleware/AsyncHandler.js";
 import User from "../models/user.js";
 import errorHandler from "../middleware/customErrorhandler.js";
 import { StatusCodes } from "http-status-codes";
+import bcryptjs from "bcryptjs";
 
 const signup = asyncHandler(async (req, res, next) => {
   const { username, email, password } = req.body;
@@ -43,4 +44,44 @@ const signin = asyncHandler(async (req, res, next) => {
   }
 });
 
-export { signup, signin };
+const googleAuth = asyncHandler(async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (user) {
+      const accessToken = user.createJWT();
+      const { password: pass, ...userData } = user._doc;
+      res
+        .cookie("access_token", accessToken, { httpOnly: true })
+        .status(StatusCodes.OK)
+        .json({
+          msg: "Login User Successfully",
+          data: { ...userData, accessToken },
+        });
+    } else {
+      const generatePassword = Math.random().toString(36).slice(-8);
+      const hashedPassword = bcryptjs.hashSync(generatePassword, 10);
+      const newUser = new User({
+        username:
+          req.body.name.split(" ").join("").toLowerCase() +
+          Math.random().toString(36).slice(-4),
+        email: req.body.email,
+        password: hashedPassword,
+        avatar: req.body.photo,
+      });
+      await newUser.save();
+      const accessToken = newUser.createJWT();
+      const { password: pass, ...userData } = newUser._doc;
+      res
+        .cookie("access_token", accessToken, { httpOnly: true })
+        .status(StatusCodes.OK)
+        .json({
+          msg: "Login User Successfully",
+          data: { ...userData, accessToken },
+        });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+export { signup, signin, googleAuth };
