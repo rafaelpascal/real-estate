@@ -35,10 +35,7 @@ const signin = asyncHandler(async (req, res, next) => {
     res
       .cookie("access_token", accessToken, { httpOnly: true })
       .status(StatusCodes.OK)
-      .json({
-        msg: "Login User Successfully",
-        data: { ...userData, accessToken },
-      });
+      .json({ ...userData, accessToken });
   } catch (error) {
     next(error);
   }
@@ -53,10 +50,7 @@ const googleAuth = asyncHandler(async (req, res, next) => {
       res
         .cookie("access_token", accessToken, { httpOnly: true })
         .status(StatusCodes.OK)
-        .json({
-          msg: "Login User Successfully",
-          data: { ...userData, accessToken },
-        });
+        .json({ ...userData, accessToken });
     } else {
       const generatePassword = Math.random().toString(36).slice(-8);
       const hashedPassword = bcryptjs.hashSync(generatePassword, 10);
@@ -68,16 +62,14 @@ const googleAuth = asyncHandler(async (req, res, next) => {
         password: hashedPassword,
         avatar: req.body.photo,
       });
+      console.log(newUser);
       await newUser.save();
       const accessToken = newUser.createJWT();
       const { password: pass, ...userData } = newUser._doc;
       res
         .cookie("access_token", accessToken, { httpOnly: true })
         .status(StatusCodes.OK)
-        .json({
-          msg: "Login User Successfully",
-          data: { ...userData, accessToken },
-        });
+        .json({ ...userData, accessToken });
     }
   } catch (error) {
     next(error);
