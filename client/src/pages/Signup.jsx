@@ -45,21 +45,21 @@ const Signout = () => {
         <input
           type="text"
           placeholder="Username"
-          className="border p-3 rounded-lg"
+          className="border p-3 rounded-lg focus:outline-none"
           id="username"
           onChange={handleChange}
         />
         <input
           type="email"
           placeholder="Email"
-          className="border p-3 rounded-lg"
+          className="border p-3 rounded-lg focus:outline-none"
           id="email"
           onChange={handleChange}
         />
         <input
           type="password"
           placeholder="Password"
-          className="border p-3 rounded-lg"
+          className="border p-3 rounded-lg focus:outline-none"
           id="password"
           onChange={handleChange}
         />
