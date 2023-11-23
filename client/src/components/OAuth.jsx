@@ -25,11 +25,11 @@ const OAuth = () => {
           photo: result.user.photoURL,
         }),
       });
-      const data = res.json();
+      const data = await res.json();
       dispatch(singInSuccess(data));
       navigate("/");
     } catch (error) {
-      console.log("Could not sign in with Google", error);
+      console.log("Could not sign in using Google", error);
     }
   };
   return (
